@@ -1,0 +1,659 @@
+<Page x:Class="RestaurantManagement.Views.EmployeeView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:RestaurantManagement.Views"
+      xmlns:viewmodels="clr-namespace:RestaurantManagement.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="1000"
+      Title="Administrare Restaurant">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar Navigation -->
+        <Border Grid.Column="0" Background="#2C3E50" Padding="0,10">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="ADMINISTRARE RESTAURANT" FontWeight="Bold" Foreground="White" 
+                             Margin="10,5,10,15" FontSize="14" TextAlignment="Center"/>
+                    
+                    <!-- Order Management Section -->
+                    <Border Padding="10,5" Margin="5,0" Background="#34495E" CornerRadius="3">
+                        <TextBlock Text="COMENZI" FontWeight="SemiBold" Foreground="White"/>
+                    </Border>
+                    <Button Content="Toate comenzile" Command="{Binding LoadAllOrdersCommand}" 
+                            Margin="8,5" Padding="8,5" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" HorizontalContentAlignment="Left">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="3"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button Content="Comenzi active" Command="{Binding LoadActiveOrdersCommand}" 
+                            Margin="8,0,8,5" Padding="8,5" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" HorizontalContentAlignment="Left">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="3"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Separator Margin="10,5" Background="#507192"/>
+                    
+                    <!-- Restaurant Management Section -->
+                    <Border Padding="10,5" Margin="5,0" Background="#34495E" CornerRadius="3">
+                        <TextBlock Text="MANAGEMENT" FontWeight="SemiBold" Foreground="White"/>
+                    </Border>
+                    <Button Content="Gestiune stoc" Command="{Binding LoadLowStockCommand}" 
+                            Margin="8,5" Padding="8,5" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" HorizontalContentAlignment="Left">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="3"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button Content="Categorii" Command="{Binding LoadCategoriesCommand}" 
+                            Margin="8,0,8,5" Padding="8,5" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" HorizontalContentAlignment="Left">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="3"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button Content="Preparate" Command="{Binding LoadDishesCommand}" 
+                            Margin="8,0,8,5" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" HorizontalContentAlignment="Left">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="3"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button Content="Meniuri" Command="{Binding LoadMenusCommand}" 
+                            Margin="8,0,8,5" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" HorizontalContentAlignment="Left">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="3"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button Content="Alergeni" Command="{Binding LoadAllergensCommand}" 
+                            Margin="8,0,8,5" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" HorizontalContentAlignment="Left">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="3"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button Content="Preparate disponibile" Command="{Binding LoadAvailableDishesCommand}" 
+                            Margin="8,0,8,5" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" HorizontalContentAlignment="Left">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="3"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Separator Margin="10,5" Background="#507192"/>
+                    
+                    <!-- Reports Section -->
+                    <Border Padding="10,5" Margin="5,0" Background="#34495E" CornerRadius="3">
+                        <TextBlock Text="RAPOARTE" FontWeight="SemiBold" Foreground="White"/>
+                    </Border>
+                    <Button Content="Clienți frecvenți" Command="{Binding LoadFrequentClientsCommand}" 
+                            Margin="8,5" Padding="8,5" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" HorizontalContentAlignment="Left">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="3"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Content Area -->
+        <Border Grid.Column="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Grid Margin="15">
+                    <!-- All Orders View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=AllOrders}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Toate Comenzile" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Orders}"
+                                  SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
+                                  IsReadOnly="True" SelectionMode="Single" 
+                                  BorderThickness="1" BorderBrush="#E0E0E0"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="60"/>
+                                <DataGridTextColumn Header="Cod Comanda" Binding="{Binding OrderCode}" Width="130"/>
+                                <DataGridTextColumn Header="Client" Binding="{Binding CustomerName}" Width="180"/>
+                                <DataGridTextColumn Header="Data" Binding="{Binding OrderDate, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120"/>
+                                <DataGridTextColumn Header="Total" Binding="{Binding TotalCost, StringFormat=N2}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Active Orders View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=ActiveOrders}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Comenzi Active" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Orders}"
+                                  SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
+                                  IsReadOnly="True" SelectionMode="Single"
+                                  BorderThickness="1" BorderBrush="#E0E0E0"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="60"/>
+                                <DataGridTextColumn Header="Cod Comanda" Binding="{Binding OrderCode}" Width="130"/>
+                                <DataGridTextColumn Header="Client" Binding="{Binding CustomerName}" Width="180"/>
+                                <DataGridTextColumn Header="Data" Binding="{Binding OrderDate, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120"/>
+                                <DataGridTextColumn Header="Total" Binding="{Binding TotalCost, StringFormat=N2}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        
+                        <Border Grid.Row="2" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Padding="0,15,0,0" Margin="0,15,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Column="0" Text="Actualizare Status:" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                
+                                <WrapPanel Grid.Column="1">
+                                    <Button Content="În Preparare" Margin="0,0,10,5" Padding="10,5"
+                                            Command="{Binding UpdateOrderStatusCommand}" 
+                                            CommandParameter="in_preparare">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="3"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                    <Button Content="În Livrare" Margin="0,0,10,5" Padding="10,5"
+                                            Command="{Binding UpdateOrderStatusCommand}" 
+                                            CommandParameter="in_livrare">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="3"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                    <Button Content="Livrată" Margin="0,0,10,5" Padding="10,5"
+                                            Command="{Binding UpdateOrderStatusCommand}" 
+                                            CommandParameter="livrata">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="3"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                    <Button Content="Anulată" Margin="0,0,10,5" Padding="10,5"
+                                            Command="{Binding UpdateOrderStatusCommand}" 
+                                            CommandParameter="anulata">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="3"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </WrapPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Low Stock View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=LowStock}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Gestiune Stoc" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <DataGrid Grid.Row="1" x:Name="LowStockDataGrid" 
+                                  ItemsSource="{Binding LowStockDishes}" 
+                                  SelectedItem="{Binding SelectedDish, Mode=TwoWay}"
+                                  IsReadOnly="False"
+                                  BorderThickness="1" BorderBrush="#E0E0E0"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                                <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="180"/>
+                                <DataGridTextColumn Header="Categorie" Binding="{Binding CategoryName}" Width="150"/>
+                                <DataGridTextColumn Header="Porție (g)" Binding="{Binding PortionSize}" Width="100"/>
+                                <DataGridTextColumn Header="Stoc (g)" Binding="{Binding TotalQuantity}" Width="100"/>
+                                <DataGridCheckBoxColumn Header="Disponibil" Binding="{Binding IsAvailable}" Width="100"/>
+                                <DataGridTemplateColumn Width="150">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Actualizare stoc" 
+                                                    Command="{Binding DataContext.UpdateStockCommand, RelativeSource={RelativeSource AncestorType=Page}}" 
+                                                    CommandParameter="{Binding}" 
+                                                    Margin="5" 
+                                                    Padding="8,3">
+                                                <Button.Resources>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="CornerRadius" Value="3"/>
+                                                    </Style>
+                                                </Button.Resources>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        
+                        <Border Grid.Row="2" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Padding="0,15,0,0" Margin="0,15,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Column="0" Text="Prag afișare stoc scăzut (g):" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBox Grid.Column="1" Width="100" Text="{Binding LowStockThreshold}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <Button Grid.Column="2" Content="Reîmprospătează" 
+                                        Command="{Binding LoadLowStockCommand}" 
+                                        HorizontalAlignment="Left" 
+                                        Padding="10,5">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Categories View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=Categories}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Categorii" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Categories}" 
+                              SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                              IsReadOnly="False" CellEditEnding="CategoriesDataGrid_CellEditEnding"
+                              BorderThickness="1" BorderBrush="#E0E0E0"
+                              Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                              GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                              AutoGenerateColumns="False"
+                              CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                                <DataGridTextColumn Header="Nume" Binding="{Binding CategoryName}" Width="200"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        
+                        <Border Grid.Row="2" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Padding="0,15,0,0" Margin="0,15,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Adaugă" Margin="0,0,10,0" Padding="15,5"
+                                        Command="{Binding AddCategoryCommand}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button Content="Editează" Margin="0,0,10,0" Padding="15,5"
+                                        Command="{Binding UpdateCategoryCommand}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                                                                        <Button Content="Șterge" Padding="15,5"                                    Command="{Binding DeleteCategoryCommand}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Dishes View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=Dishes}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Preparate" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Dishes}"
+                                  SelectedItem="{Binding SelectedDish, Mode=TwoWay}"
+                                  IsReadOnly="True"
+                                  BorderThickness="1" BorderBrush="#E0E0E0"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                                <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="180"/>
+                                <DataGridTextColumn Header="Categorie" Binding="{Binding CategoryName}" Width="150"/>
+                                <DataGridTextColumn Header="Preț" Binding="{Binding Price, StringFormat=N2}" Width="100"/>
+                                <DataGridTextColumn Header="Porție (g)" Binding="{Binding PortionSize}" Width="100"/>
+                                <DataGridTextColumn Header="Stoc (g)" Binding="{Binding TotalQuantity}" Width="100"/>
+                                <DataGridCheckBoxColumn Header="Disponibil" Binding="{Binding IsAvailable}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        
+                        <Border Grid.Row="2" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Padding="0,15,0,0" Margin="0,15,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Adaugă" Margin="0,0,10,0" Padding="15,5"
+                                        Command="{Binding AddDishCommand}" 
+                                        CommandParameter="{Binding SelectedDish}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button Content="Editează" Margin="0,0,10,0" Padding="15,5"
+                                        Command="{Binding UpdateDishCommand}" 
+                                        CommandParameter="{Binding SelectedDish}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button Content="Șterge" Padding="15,5"
+                                        Command="{Binding DeleteDishCommand}" 
+                                        CommandParameter="{Binding SelectedDish}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Menus View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=Menus}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Meniuri" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Menus}"
+                                  SelectedItem="{Binding SelectedMenu, Mode=TwoWay}"
+                                  IsReadOnly="True"
+                                  BorderThickness="1" BorderBrush="#E0E0E0"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                                <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="180"/>
+                                <DataGridTextColumn Header="Categorie" Binding="{Binding CategoryName}" Width="150"/>
+                                <DataGridTextColumn Header="Preț" Binding="{Binding Price, StringFormat=N2}" Width="100"/>
+                                <DataGridTextColumn Header="Reducere %" Binding="{Binding DiscountPercent}" Width="120"/>
+                                <DataGridCheckBoxColumn Header="Disponibil" Binding="{Binding IsAvailable}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        
+                        <Border Grid.Row="2" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Padding="0,15,0,0" Margin="0,15,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Adaugă" Margin="0,0,10,0" Padding="15,5"
+                                        Command="{Binding AddMenuCommand}" 
+                                        CommandParameter="{Binding SelectedMenu}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button Content="Editează" Margin="0,0,10,0" Padding="15,5"
+                                        Command="{Binding UpdateMenuCommand}" 
+                                        CommandParameter="{Binding SelectedMenu}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button Content="Șterge" Padding="15,5"
+                                        Command="{Binding DeleteMenuCommand}" 
+                                        CommandParameter="{Binding SelectedMenu}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Allergens View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=Allergens}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Alergeni" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Allergens}"
+                                  SelectedItem="{Binding SelectedAllergen, Mode=TwoWay}"
+                                  IsReadOnly="True"
+                                  BorderThickness="1" BorderBrush="#E0E0E0"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0" 
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                                <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="200"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        
+                        <Border Grid.Row="2" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Padding="0,15,0,0" Margin="0,15,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Adaugă" Margin="0,0,10,0" Padding="15,5"
+                                        Command="{Binding AddAllergenCommand}" 
+                                        CommandParameter="{Binding SelectedAllergen}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button Content="Editează" Margin="0,0,10,0" Padding="15,5"
+                                        Command="{Binding UpdateAllergenCommand}" 
+                                        CommandParameter="{Binding SelectedAllergen}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button Content="Șterge" Padding="15,5"
+                                        Command="{Binding DeleteAllergenCommand}" 
+                                        CommandParameter="{Binding SelectedAllergen}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="3"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Report Views -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=SalesReport}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Raport Vânzări" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <!-- SalesReport content will go here -->
+                        <!-- This is just a placeholder until you implement the full SalesReportView -->
+                        <Border Grid.Row="1" Background="#F8F9FA" BorderBrush="#DDDDDD" BorderThickness="1" Padding="20">
+                            <TextBlock Text="Raport vânzări - în implementare" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- Available Dishes View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=AvailableDishes}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Preparate Disponibile" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding AvailableDishes}"
+                                  IsReadOnly="True"
+                                  BorderThickness="1" BorderBrush="#E0E0E0"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding DishId}" Width="60"/>
+                                <DataGridTextColumn Header="Nume" Binding="{Binding DishName}" Width="180"/>
+                                <DataGridTextColumn Header="Categorie" Binding="{Binding CategoryName}" Width="150"/>
+                                <DataGridTextColumn Header="Preț" Binding="{Binding Price, StringFormat=N2}" Width="100"/>
+                                <DataGridTextColumn Header="Porție (g)" Binding="{Binding PortionQuantityGrams}" Width="100"/>
+                                <DataGridTemplateColumn Width="180">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Marcheză ca indisponibil" Padding="5,3" Margin="5" FontSize="11">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding>
+                                                        <Binding Path="DishId"/>
+                                                        <Binding Path="False"/>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                                <Button.Command>
+                                                    <Binding Path="DataContext.UpdateDishAvailabilityCommand" RelativeSource="{RelativeSource AncestorType=Page}" />
+                                                </Button.Command>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Frequent Clients View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=FrequentClients}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Clienți Frecvenți" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding FrequentClients}"
+                                  IsReadOnly="True" 
+                                  BorderThickness="1" BorderBrush="#E0E0E0"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding UserId}" Width="60"/>
+                                <DataGridTextColumn Header="Nume" Binding="{Binding FullName}" Width="180"/>
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200"/>
+                                <DataGridTextColumn Header="Telefon" Binding="{Binding Phone}" Width="120"/>
+                                <DataGridTextColumn Header="Comenzi" Binding="{Binding OrdersCount}" Width="100"/>
+                                <DataGridTextColumn Header="Total cheltuit" Binding="{Binding TotalSpent, StringFormat=N2}" Width="120"/>
+                                <DataGridTextColumn Header="Medie comandă" Binding="{Binding AverageOrderValue, StringFormat=N2}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Order Details View -->
+                    <Grid Visibility="{Binding CurrentMode, Converter={StaticResource ViewModeToVisibilityConverter}, ConverterParameter=OrderDetails}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,15">
+                            <TextBlock Text="Detalii Comandă" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <TextBlock Text="{Binding SelectedOrder.OrderCode, StringFormat=Cod comandă: {0}}" FontSize="14" Margin="0,0,0,5"/>
+                        </StackPanel>
+                        
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding OrderDetails}"
+                                  IsReadOnly="True"
+                                  BorderThickness="1" BorderBrush="#E0E0E0"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#F5F5F5"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                                  AutoGenerateColumns="False"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Tip" Binding="{Binding ItemType}" Width="100"/>
+                                <DataGridTextColumn Header="Denumire" Binding="{Binding ItemName}" Width="200"/>
+                                <DataGridTextColumn Header="Cantitate" Binding="{Binding Quantity}" Width="100"/>
+                                <DataGridTextColumn Header="Preț unitar" Binding="{Binding UnitPrice, StringFormat=N2}" Width="120"/>
+                                <DataGridTextColumn Header="Preț total" Binding="{Binding TotalPrice, StringFormat=N2}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page> 

@@ -1,0 +1,156 @@
+<UserControl x:Class="RestaurantManagement.Views.RestaurantMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RestaurantManagement.Views"
+             xmlns:viewmodels="clr-namespace:RestaurantManagement.ViewModels"
+             xmlns:converters="clr-namespace:RestaurantManagement.Converters"
+             d:DataContext="{d:DesignInstance Type=viewmodels:RestaurantMenuViewModel}"
+             mc:Ignorable="d" 
+             Loaded="RestaurantMenuView_OnLoaded">
+    
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Search Panel -->
+        <Border Grid.Row="0" 
+                BorderBrush="#DDDDDD" 
+                BorderThickness="0,0,0,1" 
+                Background="White" 
+                Padding="20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" 
+                           Grid.Column="0" 
+                           Grid.ColumnSpan="2" 
+                           Text="Căutare în Meniu" 
+                           FontSize="18" 
+                           FontWeight="SemiBold" 
+                           Margin="0,0,0,10"/>
+                
+                <TextBox Grid.Row="1" 
+                         Grid.Column="0"
+                         Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                         Padding="8" 
+                         Margin="0,0,10,0"
+                         FontSize="14"
+                         KeyDown="SearchTextBox_KeyDown"/>
+                
+                <Button Grid.Row="1" 
+                        Grid.Column="1" 
+                        Content="Caută" 
+                        Padding="15,8" 
+                        Command="{Binding SearchCommand}"/>
+                
+                <StackPanel Grid.Row="2"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Orientation="Horizontal"
+                            Margin="0,10,0,0">
+                    <CheckBox Content="Caută după alergen"
+                              IsChecked="{Binding SearchByAllergen}" 
+                              Margin="0,0,15,0" 
+                              VerticalAlignment="Center"/>
+                    
+                    <CheckBox Content="Exclude din rezultate" 
+                              IsChecked="{Binding ExcludeSearchTerm}" 
+                              VerticalAlignment="Center"/>
+                    
+                    <Button Content="Resetare" 
+                            Command="{Binding ClearSearchCommand}" 
+                            Padding="10,5" 
+                            Margin="15,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Content Area -->
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <!-- Search Results -->
+                <Grid Visibility="{Binding IsSearching, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <!-- No Results Message -->
+                    <Border Visibility="{Binding HasNoResults, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Background="#FFF8F8F8"
+                            BorderBrush="#FFDDDDDD" 
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="20"
+                            Margin="20">
+                        <TextBlock Text="{Binding NoResultsMessage}"
+                                   FontSize="16"
+                                   TextAlignment="Center"/>
+                    </Border>
+                    
+                    <!-- Results List -->
+                    <ItemsControl ItemsSource="{Binding SearchResultCategories}" 
+                                  Visibility="{Binding HasNoResults, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                                  Margin="20">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,30">
+                                    <TextBlock Text="{Binding Name}" 
+                                               FontSize="20" 
+                                               FontWeight="Bold" 
+                                               Margin="0,0,0,10"/>
+                                    
+                                    <ItemsControl ItemsSource="{Binding Items}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <local:MenuItemView DataContext="{Binding}" Margin="0,0,0,20"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+
+                <!-- Regular Menu -->
+                <ItemsControl ItemsSource="{Binding Categories}" 
+                              Visibility="{Binding IsSearching, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                              Margin="20">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,30">
+                                <TextBlock Text="{Binding Name}" 
+                                           FontSize="20" 
+                                           FontWeight="Bold" 
+                                           Margin="0,0,0,10"/>
+                                
+                                <ItemsControl ItemsSource="{Binding Items}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <local:MenuItemView DataContext="{Binding}" Margin="0,0,0,20"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl> 

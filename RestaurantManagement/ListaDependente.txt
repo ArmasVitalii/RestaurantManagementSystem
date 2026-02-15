@@ -1,0 +1,27 @@
+Pentru a utiliza procedurile stocate din proiect, trebuie adăugate următoarele pachete NuGet:
+
+1. System.Data.SqlClient - pentru conexiuni la baza de date SQL Server cu ADO.NET
+2. Microsoft.EntityFrameworkCore.SqlServer - pentru Entity Framework Core cu SQL Server
+
+Procedurile stocate implementate:
+
+1. sp_GetPopularDishes - Procedură complexă cu join-uri pentru a obține preparatele populare
+   - Folosește join-uri între tabele: Dishes, Categories, OrderDishes, Orders
+   - Folosește STUFF și FOR XML pentru generarea listei de alergeni pentru fiecare preparat
+
+2. sp_GenerateSalesReport - Procedură complexă cu subinterogări pentru raportul de vânzări
+   - Folosește subinterogări pentru calculul comenzilor finalizate, anulate și ora de vârf
+   - Calculează procentajul din vânzările totale pentru fiecare categorie de preparate
+
+3. sp_UpdateDishStock - Procedură pentru actualizarea stocului de preparate
+   - Folosește tranzacții pentru a asigura consistența datelor
+   - Utilizează gestionarea erorilor cu TRY-CATCH-THROW
+
+4. sp_GetCustomerOrderDetails - Procedură pentru detalii complete despre comenzile clientului
+   - Returnează trei seturi de rezultate: comenzi, preparate și meniuri comandate
+
+5. sp_GetLoyalCustomers - Procedură pentru identificarea clienților fideli
+   - Folosește funcții de agregare și subinterogări pentru a calcula preparatul preferat
+   - Calculează frecvența medie de comandă cu funcții avansate de dată și agregare
+
+Pentru a instala procedurile stocate, rulați scriptul StoredProcedures.sql din folderul Database pe instanța SQL Server care găzduiește baza de date RestaurantManagement. 

@@ -1,0 +1,14 @@
+﻿<Application x:Class="RestaurantManagement.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RestaurantManagement"
+             xmlns:converters="clr-namespace:RestaurantManagement.Converters">
+    <Application.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter"/>
+        <converters:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter"/>
+        <converters:ViewModeToBackgroundConverter x:Key="ViewModeToBackgroundConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Application.Resources>
+</Application>
